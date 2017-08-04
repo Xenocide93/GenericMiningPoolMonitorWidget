@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:background="#444"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/lastPriceTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="93501"
+        android:text="xxxxx"
+        android:textSize="32sp"
+        android:gravity="center"
+        android:textColor="#fff"/>
+
+    <TextView
+        android:id="@+id/suprnovaTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#fff"
+        android:textSize="18sp"
+        android:layout_marginTop="-4dp"
+        android:text="xxx,xxx Sol/s"
+        tools:text="999,999  Sol/s"/>
+
+    <TextView
+        android:id="@+id/balanceTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#fff"
+        android:textSize="18sp"
+        android:layout_marginTop="-4dp"
+        android:text="x.xxx Zec"
+        tools:text="0.123 Zec"/>
+
+</LinearLayout>
