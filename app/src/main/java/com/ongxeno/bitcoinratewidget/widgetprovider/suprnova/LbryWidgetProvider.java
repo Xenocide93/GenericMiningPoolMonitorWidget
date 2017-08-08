@@ -1,12 +1,14 @@
 package com.ongxeno.bitcoinratewidget.widgetprovider.suprnova;
 
-import com.ongxeno.bitcoinratewidget.common.preference.SuprnovaPref;
+import com.ongxeno.bitcoinratewidget.common.preference.CoinminePref;
+import com.ongxeno.bitcoinratewidget.widgetprovider.coinmine.AbstractCoinmineWidgetProvider;
 
 /**
  * @author Xenocide93 on 6/18/17.
  */
 
-public class LbryWidgetProvider extends AbstractSuprnovaWidgetProvider {
+public class LbryWidgetProvider extends AbstractCoinmineWidgetProvider {
+
 	@Override
 	protected String getCoinmineCoinType() {
 		return "lbry";
@@ -33,7 +35,7 @@ public class LbryWidgetProvider extends AbstractSuprnovaWidgetProvider {
 	}
 
 	@Override
-	protected void onSetThreshold(SuprnovaPref pref, double threshold) {
+	protected void onSetThreshold(CoinminePref pref, double threshold) {
 		pref.setThresholdLbry(threshold);
 	}
 }

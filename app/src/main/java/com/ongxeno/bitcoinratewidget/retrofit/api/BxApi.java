@@ -1,6 +1,6 @@
 package com.ongxeno.bitcoinratewidget.retrofit.api;
 
-import com.ongxeno.bitcoinratewidget.model.BxMarketData;
+import com.ongxeno.bitcoinratewidget.model.bx.BxMarketData;
 
 import java.util.Map;
 

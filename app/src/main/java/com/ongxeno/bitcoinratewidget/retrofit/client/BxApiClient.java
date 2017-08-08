@@ -3,7 +3,7 @@ package com.ongxeno.bitcoinratewidget.retrofit.client;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ongxeno.bitcoinratewidget.model.BxMarketData;
+import com.ongxeno.bitcoinratewidget.model.bx.BxMarketData;
 import com.ongxeno.bitcoinratewidget.retrofit.api.BxApi;
 
 import java.util.Map;

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context="com.ongxeno.bitcoinratewidget.widgetprovider.config.CustomWidgetConfigActivity">
+
+	<LinearLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:tools="http://schemas.android.com/tools"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:padding="16dp">
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Setup widget with pool information."/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:layout_marginTop="@dimen/space_large"
+			android:orientation="horizontal">
+
+			<EditText
+				android:id="@+id/baseUrlEditText"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:hint="Base URL"/>
+
+			<Button
+				android:id="@+id/baseUrlPasteButton"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="@dimen/space_normal"
+				android:text="paste"/>
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:layout_marginTop="@dimen/space_normal"
+			android:orientation="horizontal">
+
+			<EditText
+				android:id="@+id/apiKeyEditText"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:hint="API Key"/>
+
+			<Button
+				android:id="@+id/apiKeyPasteButton"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="@dimen/space_normal"
+				android:text="paste"/>
+		</LinearLayout>
+
+		<EditText
+			android:id="@+id/hashRateUnitEditText"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/space_normal"
+			android:hint="Hash Rate Unit"/>
+
+		<EditText
+			android:id="@+id/balanceUnitEditText"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/space_normal"
+			android:hint="Balance Unit"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:layout_marginTop="@dimen/space_normal"
+			android:orientation="horizontal">
+
+			<EditText
+				android:id="@+id/minHashRateEditText"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:hint="Min Hash Rate"/>
+
+			<Button
+				android:id="@+id/minHashRateOffButton"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="@dimen/space_normal"
+				android:text="Don't notify"/>
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:layout_marginTop="@dimen/space_normal"
+			android:orientation="horizontal">
+
+			<EditText
+				android:id="@+id/hashRateFactorEditText"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:hint="Hash Rate Factor"/>
+
+			<Button
+				android:id="@+id/defaultHashRateFactorButton"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="@dimen/space_normal"
+				android:text="Default"/>
+		</LinearLayout>
+
+		<Button
+			android:id="@+id/saveButton"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="@dimen/space_large"
+			android:text="save widget"/>
+
+	</LinearLayout>
+
+</ScrollView>

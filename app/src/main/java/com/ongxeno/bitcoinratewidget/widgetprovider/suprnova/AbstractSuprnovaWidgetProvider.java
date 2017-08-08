@@ -16,9 +16,11 @@ public abstract class AbstractSuprnovaWidgetProvider extends AbstractGenericPool
 
 	private static final String SUPRNOVA_BASE_URL = ".suprnova.cc/";
 
+	public static final int POOL_ID = 1;
+
 	@Override
 	protected String getBaseUrl() {
-		return HTTP + getCoinmineCoinType() + SUPRNOVA_BASE_URL;
+		return HTTP + getSuprnovaCoinType() + SUPRNOVA_BASE_URL;
 	}
 
 	@Override
@@ -32,4 +34,16 @@ public abstract class AbstractSuprnovaWidgetProvider extends AbstractGenericPool
 	}
 
 	protected abstract void onSetThreshold(SuprnovaPref pref, double threshold);
+
+	@Override
+	protected int getPoolId() {
+		return POOL_ID;
+	}
+
+	abstract String getSuprnovaCoinType();
+
+	@Override
+	protected boolean hasInit() {
+		return true;
+	}
 }

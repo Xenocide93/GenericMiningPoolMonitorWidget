@@ -6,30 +6,35 @@ import com.ongxeno.bitcoinratewidget.common.preference.SuprnovaPref;
  * @author Xenocide93 on 6/18/17.
  */
 
-public class HushWidgetProvider extends AbstractSuprnovaWidgetProvider {
+public class SigtWidgetProvider extends AbstractSuprnovaWidgetProvider {
 
 	@Override
 	protected String getSuprnovaCoinType() {
-		return "hush";
+		return "SIGT";
 	}
 
 	@Override
 	protected String getHashRateSuffix() {
-		return "Sol/s";
+		return "MH/s";
 	}
 
 	@Override
 	protected String getBalanceSuffix() {
-		return "Hush";
+		return "SIGT";
 	}
 
 	@Override
 	protected double getMinHashRateThreshold() {
-		return 790000d;
+		return 90d;
 	}
 
 	@Override
 	protected void onSetThreshold(SuprnovaPref pref, double threshold) {
-		pref.setThresholdHush(threshold);
+		pref.setThresholdSigt(threshold);
+	}
+
+	@Override
+	protected double getHashRateDisplayFactor() {
+		return 0.001d;
 	}
 }

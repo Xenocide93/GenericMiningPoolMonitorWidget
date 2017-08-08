@@ -9,7 +9,7 @@ import com.ongxeno.bitcoinratewidget.common.preference.SuprnovaPref;
 public class ZecWidgetProvider extends AbstractSuprnovaWidgetProvider {
 
 	@Override
-	protected String getCoinmineCoinType() {
+	protected String getSuprnovaCoinType() {
 		return "zec";
 	}
 

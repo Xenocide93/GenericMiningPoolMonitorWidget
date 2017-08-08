@@ -12,6 +12,7 @@ public abstract class AbstractGenericPoolPreference {
 	private static final String THRESHOLD_HUSH = "threshold-hush";
 	private static final String THRESHOLD_ZEC = "threshold-zec";
 	private static final String THRESHOLD_LBRY = "threshold-lbry";
+	private static final String THRESHOLD_SIGT = "threshold-sigt";
 
 	private SharedPreferences pref;
 
@@ -48,5 +49,13 @@ public abstract class AbstractGenericPoolPreference {
 
 	public void setThresholdLbry(double threshold) {
 		pref.edit().putFloat(THRESHOLD_LBRY, (float) threshold).apply();
+	}
+
+	public double getThresholdSigt() {
+		return pref.getFloat(THRESHOLD_SIGT, 0f);
+	}
+
+	public void setThresholdSigt(double threshold) {
+		pref.edit().putFloat(THRESHOLD_SIGT, (float) threshold).apply();
 	}
 }

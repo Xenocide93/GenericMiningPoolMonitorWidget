@@ -1,9 +1,5 @@
 package com.ongxeno.bitcoinratewidget.widgetprovider.coinmine;
 
-import android.content.Context;
-import android.content.Intent;
-
-import com.ongxeno.bitcoinratewidget.SetThresholdActivity;
 import com.ongxeno.bitcoinratewidget.common.preference.CoinminePref;
 
 /**
@@ -39,13 +35,5 @@ public class LbryCoinmineWidgetProvider extends AbstractCoinmineWidgetProvider {
 	@Override
 	protected void onSetThreshold(CoinminePref pref, double threshold) {
 		pref.setThresholdLbry(threshold);
-	}
-
-	@Override
-	public void onEnabled(Context context) {
-		Intent intent = new Intent(context, SetThresholdActivity.class);
-		//TODO set ThresholdSetterHandler to activity ... somehow
-		context.startActivity(intent);
-		super.onEnabled(context);
 	}
 }

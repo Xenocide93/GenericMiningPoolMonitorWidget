@@ -13,6 +13,8 @@ public abstract class AbstractCoinmineWidgetProvider extends AbstractGenericPool
 
 	private static final String BASE_COINMINE_URL = "https://www2.coinmine.pl/";
 
+	public static final int POOL_ID = 2;
+
 	@Override
 	protected String getBaseUrl() {
 		return BASE_COINMINE_URL + getCoinmineCoinType() + "/";
@@ -29,4 +31,21 @@ public abstract class AbstractCoinmineWidgetProvider extends AbstractGenericPool
 	}
 
 	protected abstract void onSetThreshold(CoinminePref pref, double threshold);
+
+	@Override
+	protected int getPoolId() {
+		return POOL_ID;
+	}
+
+	/**
+	 * Gets coin type that's part of base url for the api.
+	 *
+	 * @return coin type.
+	 */
+	protected abstract String getCoinmineCoinType();
+
+	@Override
+	protected boolean hasInit() {
+		return true;
+	}
 }

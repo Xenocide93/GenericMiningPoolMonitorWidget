@@ -1,5 +1,5 @@
 
-package com.ongxeno.bitcoinratewidget.model;
+package com.ongxeno.bitcoinratewidget.model.bx;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

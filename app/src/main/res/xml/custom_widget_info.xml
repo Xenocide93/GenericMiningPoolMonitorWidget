@@ -6,5 +6,5 @@
     android:minWidth="100dp"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="10000"
-	android:configure="com.ongxeno.bitcoinratewidget.widgetprovider.config.SetThresholdActivity">
+	android:configure="com.ongxeno.bitcoinratewidget.widgetprovider.config.CustomWidgetConfigActivity">
 </appwidget-provider>

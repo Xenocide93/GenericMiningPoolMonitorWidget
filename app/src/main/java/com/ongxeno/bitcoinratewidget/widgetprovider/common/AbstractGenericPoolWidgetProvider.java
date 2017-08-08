@@ -5,15 +5,16 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.ongxeno.bitcoinratewidget.R;
-import com.ongxeno.bitcoinratewidget.model.BxMarketData;
+import com.ongxeno.bitcoinratewidget.common.preference.Constant;
+import com.ongxeno.bitcoinratewidget.model.bx.BxMarketData;
 import com.ongxeno.bitcoinratewidget.model.suprnova.Suprnova;
 import com.ongxeno.bitcoinratewidget.model.suprnova.UserBalance;
 import com.ongxeno.bitcoinratewidget.retrofit.client.BxApiClient;
@@ -35,56 +36,23 @@ public abstract class AbstractGenericPoolWidgetProvider extends AbstractWidgetPr
 	private static final int NOTIFICATION_TAG = 2342;
 
 	private static final String ACTION_REFRESH_WIDGET = "refresh-widget";
+	private static final String ACTION_SET_THRESHOLD = "set-threshold";
 
 	private String bxString = "Not init";
 	private String hashRateString = "Not init";
 	private String balanceString = "Not init";
 	private String token;
+	private int widgetId = -1;
 
-	/**
-	 * Gets access token for the api.
-	 * 
-	 * @param context
-	 *            context
-	 * 
-	 * @return token
-	 */
-	protected abstract String initToken(Context context);
-
-	/**
-	 * Gets coin type that's part of base url for the api.
-	 *
-	 * @return coin type.
-	 */
-	protected abstract String getCoinmineCoinType();
-
-	/**
-	 * Gets base url for GenericPoolClient.
-	 *
-	 * @return base url.
-	 */
-	protected abstract String getBaseUrl();
-
-	/**
-	 * Gets hash rate suffix.
-	 *
-	 * @return hash rate suffix
-	 */
-	protected abstract String getHashRateSuffix();
-
-	/**
-	 * Gets balance suffix.
-	 *
-	 * @return balance suffix
-	 */
-	protected abstract String getBalanceSuffix();
-
-	/**
-	 * Get min hash rate threshold to notify.
-	 *
-	 * @return hash rate
-	 */
-	protected abstract double getMinHashRateThreshold();
+	public static Intent getThresholdSetterIntent(Context context, double threshold, int poolId, String coinType, int widgetId) {
+		Intent intent = new Intent(context, AbstractGenericPoolWidgetProvider.class);
+		intent.setAction(ACTION_SET_THRESHOLD);
+		intent.putExtra(Constant.EXTRA_THRESHOLD, threshold);
+		intent.putExtra(Constant.EXTRA_POOL_ID, poolId);
+		intent.putExtra(Constant.EXTRA_COIN_TYPE, coinType);
+		intent.putExtra(Constant.EXTRA_WIDGET_ID, widgetId);
+		return intent;
+	}
 
 	@Override
 	public int getWidgetLayoutId() {
@@ -99,20 +67,39 @@ public abstract class AbstractGenericPoolWidgetProvider extends AbstractWidgetPr
 	@Override
 	public void onReceive(final Context context, Intent intent) {
 		super.onReceive(context, intent);
-
-		token = initToken(context);
-		if (token == null || token.isEmpty()) {
-			bxString = "No Token";
-			hashRateString = "open app to setup";
-			balanceString = "";
-			updateWidget(context);
-		} else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-				|| intent.getAction().equals(ACTION_REFRESH_WIDGET)) {
-			updateWidget(context);
-			updateBX(context);
-			updateSuprnova(context);
-			updateBalance(context);
+		if (!hasInit()) {
+			updateWidgetUi(context);
+		} else {
+			token = initToken(context);
+			if (token == null || token.isEmpty()) {
+				bxString = "No Token";
+				hashRateString = "open app to setup";
+				balanceString = "";
+				updateWidgetUi(context);
+			} else if (intent.getAction().equals(ACTION_SET_THRESHOLD)) {
+				handleSetThreshold(context, intent);
+			} else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+					|| intent.getAction().equals(ACTION_REFRESH_WIDGET)) {
+				handleRefreshWidget(context);
+			}
 		}
+	}
+
+	private void handleSetThreshold(Context context, Intent intent) {
+		double threshold = intent.getDoubleExtra(Constant.EXTRA_THRESHOLD, 0);
+		int poolId = intent.getIntExtra(Constant.EXTRA_POOL_ID, 0);
+		String coinType = intent.getStringExtra(Constant.EXTRA_COIN_TYPE);
+		int targetWidgetId = intent.getIntExtra(Constant.EXTRA_WIDGET_ID, -2);
+		if (targetWidgetId == widgetId) {
+			onSetThreshold(context, threshold);
+		}
+	}
+
+	private void handleRefreshWidget(Context context) {
+		updateWidgetUi(context);
+		updateBX(context);
+		updateSuprnova(context);
+		updateBalance(context);
 	}
 
 	private void updateBalance(final Context context) {
@@ -121,7 +108,7 @@ public abstract class AbstractGenericPoolWidgetProvider extends AbstractWidgetPr
 			public void onResponse(Call<UserBalance> call, Response<UserBalance> response) {
 				if (response.body() == null) {
 					balanceString = "Error";
-					updateWidget(context);
+					updateWidgetUi(context);
 					return;
 				}
 
@@ -130,14 +117,14 @@ public abstract class AbstractGenericPoolWidgetProvider extends AbstractWidgetPr
 					Double balanceDouble = balance.getUserBalanceData().getBalanceData().getConfirmed()
 							+ balance.getUserBalanceData().getBalanceData().getUnconfirmed();
 					balanceString = formatBalance(balanceDouble, 3) + " " + getBalanceSuffix();
-					updateWidget(context);
+					updateWidgetUi(context);
 				}
 			}
 
 			@Override
 			public void onFailure(Call<UserBalance> call, Throwable t) {
 				balanceString = "Error";
-				updateWidget(context);
+				updateWidgetUi(context);
 			}
 		});
 	}
@@ -158,13 +145,13 @@ public abstract class AbstractGenericPoolWidgetProvider extends AbstractWidgetPr
 				} else {
 					bxString = "Error";
 				}
-				updateWidget(context);
+				updateWidgetUi(context);
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<Map<Integer, BxMarketData>> call, @NonNull Throwable t) {
 				bxString = "Error";
-				updateWidget(context);
+				updateWidgetUi(context);
 			}
 		});
 	}
@@ -190,18 +177,18 @@ public abstract class AbstractGenericPoolWidgetProvider extends AbstractWidgetPr
 				} else {
 					hashRateString = "Error";
 				}
-				updateWidget(context);
+				updateWidgetUi(context);
 			}
 
 			@Override
 			public void onFailure(@NonNull Call<Suprnova> call, @NonNull Throwable t) {
 				hashRateString = "Error";
-				updateWidget(context);
+				updateWidgetUi(context);
 			}
 		});
 	}
 
-	private void updateWidget(Context context) {
+	private void updateWidgetUi(Context context) {
 		final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), getWidgetLayoutId());
 		final ComponentName widget = new ComponentName(context, getClass());
 
@@ -240,7 +227,17 @@ public abstract class AbstractGenericPoolWidgetProvider extends AbstractWidgetPr
 	@Override
 	public void onUpdate(final Context context, final AppWidgetManager appWidgetManager, final RemoteViews remoteViews,
 			final int widgetId) {
-		Log.d(getClass().getSimpleName(), "onUpdate: " + widgetId);
+		this.widgetId = widgetId;
+		if (hasInit()) {
+			handleRefreshWidget(context);
+		}
+	}
+
+	protected abstract boolean hasInit();
+
+	@Override
+	public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
+		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
 	}
 
 	protected PendingIntent getPendingSelfIntent(Context context, String action) {
@@ -252,4 +249,54 @@ public abstract class AbstractGenericPoolWidgetProvider extends AbstractWidgetPr
 	protected double getHashRateDisplayFactor() {
 		return 1d;
 	}
+
+	protected int getWidgetId() {
+		return widgetId;
+	}
+
+	/**
+	 * Gets access token for the api.
+	 *
+	 * @param context
+	 *            context
+	 *
+	 * @return token
+	 */
+	protected abstract String initToken(Context context);
+
+	/**
+	 * Gets base url for GenericPoolClient.
+	 *
+	 * @return base url.
+	 */
+	protected abstract String getBaseUrl();
+
+	/**
+	 * Gets hash rate suffix.
+	 *
+	 * @return hash rate suffix
+	 */
+	protected abstract String getHashRateSuffix();
+
+	/**
+	 * Gets balance suffix.
+	 *
+	 * @return balance suffix
+	 */
+	protected abstract String getBalanceSuffix();
+
+	/**
+	 * Get min hash rate threshold to notify.
+	 *
+	 * @return hash rate
+	 */
+	protected abstract double getMinHashRateThreshold();
+
+	/**
+	 * Get unique pool ID.
+	 *
+	 * @return pool ID
+	 */
+	protected abstract int getPoolId();
+
 }
