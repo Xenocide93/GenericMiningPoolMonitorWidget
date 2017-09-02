@@ -21,8 +21,13 @@ public abstract class AbstractCoinmineWidgetProvider extends AbstractGenericPool
 	}
 
 	@Override
-	protected String initToken(Context context) {
+	protected String getToken(Context context) {
 		return Preference.getInstance(context).getCoinmineApiToken();
+	}
+
+	@Override
+	public boolean hasSetupToken(Context context) {
+		return !Preference.getInstance(context).getCoinmineApiToken().isEmpty();
 	}
 
 	@Override
@@ -45,7 +50,7 @@ public abstract class AbstractCoinmineWidgetProvider extends AbstractGenericPool
 	protected abstract String getCoinmineCoinType();
 
 	@Override
-	protected boolean hasInit() {
+	public boolean hasInit() {
 		return true;
 	}
 }

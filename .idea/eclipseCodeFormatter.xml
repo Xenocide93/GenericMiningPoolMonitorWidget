@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EclipseCodeFormatterProjectSettings">
+    <option name="selectedGlobalProfile">
+      <Settings>
+        <option name="formatter" value="ECLIPSE" />
+        <option name="id" value="1465531932094" />
+        <option name="name" value="default" />
+        <option name="pathToConfigFileJava" value="$PROJECT_DIR$/../code-analysis/src/main/resources/checkstyle/wongnai-formatter.xml" />
+        <option name="selectedJavaProfile" value="Wongnai" />
+      </Settings>
+    </option>
+  </component>
+</project>

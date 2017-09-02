@@ -13,7 +13,9 @@ import android.widget.RemoteViews;
  * @author Xenocide93 on 6/18/17.
  */
 
-public abstract class AbstractWidgetProvider<T> extends AppWidgetProvider {
+public abstract class AbstractWidgetProvider extends AppWidgetProvider {
+
+    private int widgetId;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -23,6 +25,13 @@ public abstract class AbstractWidgetProvider<T> extends AppWidgetProvider {
             setOnClickUpdateListener(context, remoteViews, i);
             appWidgetManager.updateAppWidget(appWidgetIds[i], remoteViews);
         }
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), getWidgetLayoutId());
+        setOnClickUpdateListener(context, remoteViews, getWidgetId());
     }
 
     private void setOnClickUpdateListener(Context context, RemoteViews remoteViews, int widgetId) {
@@ -38,5 +47,11 @@ public abstract class AbstractWidgetProvider<T> extends AppWidgetProvider {
 
     public abstract @IdRes int getClickUpdateViewId();
 
-    public abstract void onUpdate(Context context, AppWidgetManager appWidgetManager, RemoteViews remoteViews, int widgetId);
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, RemoteViews remoteViews, int widgetId) {
+        this.widgetId = widgetId;
+    }
+
+    public int getWidgetId() {
+        return widgetId;
+    }
 }
