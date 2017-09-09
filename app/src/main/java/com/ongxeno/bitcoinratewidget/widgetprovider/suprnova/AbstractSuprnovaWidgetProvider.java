@@ -46,4 +46,10 @@ public abstract class AbstractSuprnovaWidgetProvider extends AbstractGenericPool
 	public boolean hasInit() {
 		return true;
 	}
+
+	@Override
+	public boolean hasSetupToken(Context context) {
+		String token = Preference.getInstance(context).getSuprnovaApiToken();
+		return  token != null && !token.isEmpty();
+	}
 }

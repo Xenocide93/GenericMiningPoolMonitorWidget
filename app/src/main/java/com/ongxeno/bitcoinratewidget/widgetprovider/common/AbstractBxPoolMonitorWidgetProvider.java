@@ -1,6 +1,5 @@
 package com.ongxeno.bitcoinratewidget.widgetprovider.common;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,7 +15,6 @@ import com.ongxeno.bitcoinratewidget.common.preference.Constant;
 import com.ongxeno.bitcoinratewidget.model.bx.BxMarketData;
 import com.ongxeno.bitcoinratewidget.retrofit.client.BxApiClient;
 
-import java.text.NumberFormat;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -30,8 +28,7 @@ import retrofit2.Response;
 public abstract class AbstractBxPoolMonitorWidgetProvider extends AbstractWidgetProvider implements ThresholdSetterHandler  {
 
 	private static final int NOTIFICATION_TAG = 2342;
-	private static final String ACTION_REFRESH_WIDGET = "refresh-widget";
-	private static final String ACTION_SET_THRESHOLD = "set-threshold";
+	public static final String ACTION_SET_THRESHOLD = "set-threshold";
 
 	private String bxString;
 	private String balanceString;
@@ -39,7 +36,7 @@ public abstract class AbstractBxPoolMonitorWidgetProvider extends AbstractWidget
 
 	@Override
 	public int getWidgetLayoutId() {
-		return R.layout.widget_bitcoin_rate;
+		return R.layout.widget_bitcoin_rig_rate;
 	}
 
 	@Override
@@ -48,27 +45,20 @@ public abstract class AbstractBxPoolMonitorWidgetProvider extends AbstractWidget
 	}
 
 	@Override
-	public void onUpdate(Context context, AppWidgetManager appWidgetManager, RemoteViews remoteViews, int widgetId) {
-		if (hasInit()) {
-			handleRefreshWidget(context);
-		}
-	}
-
-	@Override
 	public void onReceive(final Context context, Intent intent) {
 		super.onReceive(context, intent);
-		if (!hasInit()) {
-			updateWidgetUi(context, "Not Init", "Not Init", "Not Init");
-		} else {
+		if (hasInit()) {
 			if (!hasSetupToken(context)) {
 				updateWidgetUi(context, "No Token", "open app to setup", "");
 			} else if (intent.getAction().equals(ACTION_SET_THRESHOLD)) {
 				handleSetThreshold(context, intent);
-			} else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-					|| intent.getAction().equals(ACTION_REFRESH_WIDGET)) {
-				handleRefreshWidget(context);
 			}
 		}
+	}
+
+	@Override
+	public void updateUiNotInit(Context context) {
+		updateWidgetUi(context, "Not Init", "Not Init", "Not Init");
 	}
 
 	private void handleSetThreshold(Context context, Intent intent) {
@@ -78,6 +68,16 @@ public abstract class AbstractBxPoolMonitorWidgetProvider extends AbstractWidget
 		int targetWidgetId = intent.getIntExtra(Constant.EXTRA_WIDGET_ID, -2);
 		if (targetWidgetId == getWidgetId()) {
 			onSetThreshold(context, threshold);
+		}
+	}
+
+	@Override
+	public void onUpdate(Context context, int widgetId) {
+		if (hasInit()) {
+			updateWidgetUi(context, "Loading ...", "", "");
+			updateBX(context);
+			updateHashRate(context);
+			updateBalance(context);
 		}
 	}
 
@@ -94,36 +94,7 @@ public abstract class AbstractBxPoolMonitorWidgetProvider extends AbstractWidget
 		remoteViews.setTextViewText(R.id.balanceTextView, balanceString);
 		(AppWidgetManager.getInstance(context)).updateAppWidget(widget, remoteViews);
 
-		remoteViews.setOnClickPendingIntent(R.id.rootView, getPendingSelfIntent(context, ACTION_REFRESH_WIDGET));
-	}
-
-	protected PendingIntent getPendingSelfIntent(Context context, String action) {
-		Intent intent = new Intent(context, getClass());
-		intent.setAction(action);
-		return PendingIntent.getBroadcast(context, 0, intent, 0);
-	}
-
-	protected String formatNumber(double number, int precision) {
-		return NumberFormat.getIntegerInstance().format(((int) number * Math.pow(10, precision)) / Math.pow(10, precision));
-	}
-
-	protected void notifyWorkerDown(Context context, Double hashRate) {
-		String title = "Worker Down!";
-		String content = String.format("Hash rate is down to %s. Check it now.", formatNumber(hashRate, 0));
-
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-		builder.setContentTitle(title);
-		builder.setContentText(content);
-		builder.setStyle(new NotificationCompat.BigTextStyle().bigText(content));
-		builder.setSmallIcon(R.drawable.ic_warning_white_24dp);
-		NotificationManagerCompat.from(context).notify(NOTIFICATION_TAG, builder.build());
-	}
-
-	public void handleRefreshWidget(Context context) {
-		updateWidgetUi(context, "Loading ...", "", "");
-		updateBX(context);
-		updateHashRate(context);
-		updateBalance(context);
+		remoteViews.setOnClickPendingIntent(R.id.rootView, getSelfUpdateUiIntent(context));
 	}
 
 	protected void updateBX(final Context context) {
@@ -158,9 +129,19 @@ public abstract class AbstractBxPoolMonitorWidgetProvider extends AbstractWidget
 
 	public abstract void updateBalance(Context context);
 
-	public abstract boolean hasSetupToken(Context context);
+	protected void notifyWorkerDown(Context context, Double hashRate) {
+		String title = "Worker Down!";
+		String content = String.format("Hash rate is down to %s. Check it now.", formatNumber(hashRate, 0));
 
-	public abstract boolean hasInit();
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+		builder.setContentTitle(title);
+		builder.setContentText(content);
+		builder.setStyle(new NotificationCompat.BigTextStyle().bigText(content));
+		builder.setSmallIcon(R.drawable.ic_warning_white_24dp);
+		NotificationManagerCompat.from(context).notify(NOTIFICATION_TAG, builder.build());
+	}
+
+	public abstract boolean hasSetupToken(Context context);
 
 	public void setBxString(String bxString) {
 		this.bxString = bxString;

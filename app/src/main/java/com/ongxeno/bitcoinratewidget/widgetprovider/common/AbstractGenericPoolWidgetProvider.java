@@ -22,15 +22,6 @@ import retrofit2.Response;
 
 public abstract class AbstractGenericPoolWidgetProvider extends AbstractBxPoolMonitorWidgetProvider implements ThresholdSetterHandler {
 
-
-	@Override
-	public void handleRefreshWidget(Context context) {
-		updateWidgetUi(context);
-		updateBX(context);
-		updateHashRate(context);
-		updateBalance(context);
-	}
-
 	@Override
 	public void updateBalance(final Context context) {
 		new GenericPoolClient(getToken(context), getBaseUrl()).getUserBalance(new Callback<UserBalance>() {

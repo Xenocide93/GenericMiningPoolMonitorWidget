@@ -17,11 +17,26 @@ public class CustomWidgetProvider extends AbstractGenericPoolWidgetProvider {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE)) {
-
-		} else {
+		if (!intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE)) {
 			super.onReceive(context, intent);
 		}
+	}
+
+	@Override
+	public boolean hasSetupToken(Context context) {
+		String token = getToken(context);
+		return token != null && token.isEmpty();
+	}
+
+	@Override
+	public boolean hasInit() {
+		Realm realm = Realm.getDefaultInstance();
+		realm.beginTransaction();
+		WidgetData widgetData = realm.where(WidgetData.class).equalTo(WidgetData.PRIMARY_KEY, getWidgetId()).findFirst();
+		boolean hasInit = widgetData != null;
+		realm.commitTransaction();
+		realm.close();
+		return hasInit;
 	}
 
 	@Override
@@ -29,28 +44,24 @@ public class CustomWidgetProvider extends AbstractGenericPoolWidgetProvider {
 		Realm realm = Realm.getDefaultInstance();
 		realm.beginTransaction();
 		WidgetData widgetData = realm.where(WidgetData.class).equalTo(WidgetData.PRIMARY_KEY, getWidgetId()).findFirst();
+		if (widgetData == null) {
+			widgetData = new WidgetData();
+		}
 		widgetData.setMinHashRateThreshold(threshold);
+		realm.copyToRealmOrUpdate(widgetData);
 		realm.commitTransaction();
 		realm.close();
 	}
 
 	@Override
-	protected boolean hasInit() {
+	protected String getToken(Context context) {
 		Realm realm = Realm.getDefaultInstance();
 		realm.beginTransaction();
 		WidgetData widgetData = realm.where(WidgetData.class).equalTo(WidgetData.PRIMARY_KEY, getWidgetId()).findFirst();
-		boolean widgetDataExist = widgetData != null;
-		realm.commitTransaction();
-		realm.close();
-		return getWidgetId() != -1 && widgetDataExist;
-	}
-
-	@Override
-	protected String initToken(Context context) {
-		Realm realm = Realm.getDefaultInstance();
-		realm.beginTransaction();
-		WidgetData widgetData = realm.where(WidgetData.class).equalTo(WidgetData.PRIMARY_KEY, getWidgetId()).findFirst();
-		String apiKey = widgetData.getApiKey();
+		String apiKey = null;
+		if (widgetData != null) {
+			apiKey = widgetData.getApiKey();
+		}
 		realm.commitTransaction();
 		realm.close();
 		return apiKey;
@@ -61,7 +72,10 @@ public class CustomWidgetProvider extends AbstractGenericPoolWidgetProvider {
 		Realm realm = Realm.getDefaultInstance();
 		realm.beginTransaction();
 		WidgetData widgetData = realm.where(WidgetData.class).equalTo(WidgetData.PRIMARY_KEY, getWidgetId()).findFirst();
-		String baseUrl = widgetData.getBaseUrl();
+		String baseUrl = null;
+		if (widgetData != null) {
+			baseUrl = widgetData.getBaseUrl();
+		}
 		realm.commitTransaction();
 		realm.close();
 		return baseUrl;
@@ -72,7 +86,10 @@ public class CustomWidgetProvider extends AbstractGenericPoolWidgetProvider {
 		Realm realm = Realm.getDefaultInstance();
 		realm.beginTransaction();
 		WidgetData widgetData = realm.where(WidgetData.class).equalTo(WidgetData.PRIMARY_KEY, getWidgetId()).findFirst();
-		String unit = widgetData.getHashRateUnit();
+		String unit = null;
+		if (widgetData != null) {
+			unit = widgetData.getHashRateUnit();
+		}
 		realm.commitTransaction();
 		realm.close();
 		return unit;
@@ -83,7 +100,10 @@ public class CustomWidgetProvider extends AbstractGenericPoolWidgetProvider {
 		Realm realm = Realm.getDefaultInstance();
 		realm.beginTransaction();
 		WidgetData widgetData = realm.where(WidgetData.class).equalTo(WidgetData.PRIMARY_KEY, getWidgetId()).findFirst();
-		String unit = widgetData.getBalanceUnit();
+		String unit = null;
+		if (widgetData != null) {
+			unit = widgetData.getBalanceUnit();
+		}
 		realm.commitTransaction();
 		realm.close();
 		return unit;
@@ -94,7 +114,10 @@ public class CustomWidgetProvider extends AbstractGenericPoolWidgetProvider {
 		Realm realm = Realm.getDefaultInstance();
 		realm.beginTransaction();
 		WidgetData widgetData = realm.where(WidgetData.class).equalTo(WidgetData.PRIMARY_KEY, getWidgetId()).findFirst();
-		Double hashRateThreshold = widgetData.getMinHashRateThreshold();
+		double hashRateThreshold = 0d;
+		if (widgetData != null) {
+			hashRateThreshold = widgetData.getMinHashRateThreshold();
+		}
 		realm.commitTransaction();
 		realm.close();
 		return hashRateThreshold;
