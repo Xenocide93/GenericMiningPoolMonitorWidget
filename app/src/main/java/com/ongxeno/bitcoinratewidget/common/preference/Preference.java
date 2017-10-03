@@ -14,6 +14,10 @@ public class Preference {
 
 	private static final String COINMINE_API_TOKEN = "coinmine-api-token";
 
+	private static final String DWARFPOOL_WALLET = "dwarf-wallet";
+
+	private static final String DWARFPOOL_EMAIL = "dwarf-email";
+
 	private static Preference instance;
 
 	public static Preference getInstance(Context context) {
@@ -44,6 +48,22 @@ public class Preference {
 
 	public void setCoinmineApiToken(String token) {
 		pref.edit().putString(COINMINE_API_TOKEN, token).apply();
+	}
+
+	public String getDwarfpoolWallet() {
+		return pref.getString(DWARFPOOL_WALLET, "");
+	}
+
+	public void setDwarfpoolWallet(String walletAddress) {
+		pref.edit().putString(DWARFPOOL_WALLET, walletAddress).apply();
+	}
+
+	public String getDwarfpoolEmail() {
+		return pref.getString(DWARFPOOL_EMAIL, "");
+	}
+
+	public void setDwarfpoolEmail(String email) {
+		pref.edit().putString(DWARFPOOL_EMAIL, email).apply();
 	}
 
 

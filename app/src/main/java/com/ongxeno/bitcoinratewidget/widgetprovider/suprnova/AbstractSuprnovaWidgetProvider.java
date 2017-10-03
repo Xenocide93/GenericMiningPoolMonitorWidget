@@ -24,7 +24,7 @@ public abstract class AbstractSuprnovaWidgetProvider extends AbstractGenericPool
 	}
 
 	@Override
-	protected String initToken(Context context) {
+	protected String getToken(Context context) {
 		return Preference.getInstance(context).getSuprnovaApiToken();
 	}
 
@@ -43,7 +43,7 @@ public abstract class AbstractSuprnovaWidgetProvider extends AbstractGenericPool
 	abstract String getSuprnovaCoinType();
 
 	@Override
-	protected boolean hasInit() {
+	public boolean hasInit() {
 		return true;
 	}
 }

@@ -24,7 +24,7 @@ public abstract class BaseApiClient {
                 .build();
     }
 
-    private static OkHttpClient getHttpClient() {
+    protected static OkHttpClient getHttpClient() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         // set your desired log level
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);

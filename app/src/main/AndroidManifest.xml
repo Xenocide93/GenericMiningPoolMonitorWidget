@@ -91,6 +91,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/custom_widget_info"/>
         </receiver>
-    </application>
+		<receiver android:name=".widgetprovider.common.AbstractBxPoolMonitorWidgetProvider" />
+	</application>
 
 </manifest>
