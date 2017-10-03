@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.ongxeno.bitcoinratewidget.R;
 import com.ongxeno.bitcoinratewidget.common.preference.Constant;
+import com.ongxeno.bitcoinratewidget.widgetprovider.common.AbstractBxPoolMonitorWidgetProvider;
 import com.ongxeno.bitcoinratewidget.widgetprovider.common.AbstractGenericPoolWidgetProvider;
 
 public class SetThresholdActivity extends AppCompatActivity {
@@ -73,15 +74,8 @@ public class SetThresholdActivity extends AppCompatActivity {
 		public void onClick(View v) {
 			try {
 				double threshold = Double.parseDouble(thresholdEditText.getText().toString());
-				//				Intent intent = AbstractGenericPoolWidgetProvider.getThresholdSetterIntent(v.getContext(), threshold, poolId,
-				//						coinType, widgetId);
-
-				Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, SetThresholdActivity.this,
-						AbstractGenericPoolWidgetProvider.class);
-				intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetId);
-				sendBroadcast(intent);
-
-				SetThresholdActivity.this.sendBroadcast(intent);
+				broadcastSetThreshold(threshold);
+				broadcastUpdateWidget();
 
 				if (threshold >= 0) {
 					Toast.makeText(SetThresholdActivity.this, "Threshold saved", Toast.LENGTH_SHORT).show();
@@ -94,6 +88,22 @@ public class SetThresholdActivity extends AppCompatActivity {
 				Snackbar.make(rootView, "Error: Invalid number", Snackbar.LENGTH_LONG).show();
 			}
 		}
+	}
+
+	private void broadcastUpdateWidget() {
+		Intent intent = new Intent(getApplicationContext(), AbstractGenericPoolWidgetProvider.class);
+		intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+		getApplicationContext().sendBroadcast(intent);
+	}
+
+	private void broadcastSetThreshold(double threshold) {
+		Intent intent = new Intent(getApplicationContext(), AbstractBxPoolMonitorWidgetProvider.class);
+		intent.setAction(AbstractBxPoolMonitorWidgetProvider.ACTION_SET_THRESHOLD);
+		intent.putExtra(Constant.EXTRA_THRESHOLD, threshold);
+		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+		intent.putExtra(Constant.EXTRA_WIDGET_ID, widgetId);
+		getApplicationContext().sendBroadcast(intent);
 	}
 
 	private void setResult() {
