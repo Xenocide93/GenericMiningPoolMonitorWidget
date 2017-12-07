@@ -12,6 +12,7 @@ public abstract class AbstractGenericPoolPreference extends AbstractPreference {
 	private static final String THRESHOLD_ZEC = "threshold-zec";
 	private static final String THRESHOLD_LBRY = "threshold-lbry";
 	private static final String THRESHOLD_SIGT = "threshold-sigt";
+	private static final String THRESHOLD_MONA = "threshold-mona";
 
 	public AbstractGenericPoolPreference(Context context) {
 		super(context);
@@ -47,5 +48,13 @@ public abstract class AbstractGenericPoolPreference extends AbstractPreference {
 
 	public void setThresholdSigt(double threshold) {
 		getPref().edit().putFloat(THRESHOLD_SIGT, (float) threshold).apply();
+	}
+
+	public double getThresholdMona() {
+		return getPref().getFloat(THRESHOLD_MONA, 0f);
+	}
+
+	public void setThresholdMona(double threshold) {
+		getPref().edit().putFloat(THRESHOLD_MONA, (float) threshold).apply();
 	}
 }
