@@ -24,6 +24,11 @@ public class MonaWidgetProvider extends AbstractSuprnovaWidgetProvider {
 	}
 
 	@Override
+	protected double getHashRateDisplayFactor() {
+		return 0.001;
+	}
+
+	@Override
 	protected double getMinHashRateThreshold() {
 		return 100d;
 	}
